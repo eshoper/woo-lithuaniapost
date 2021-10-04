@@ -19,13 +19,13 @@
 </label>
 <select name="woo_lithuaniapost_lpexpress_terminal_city" id="woo_lithuaniapost_lpexpress_terminal_city">
     <option value=""><?php echo __( 'Please select LP EXPRESS terminal locality..', 'woo-lithuaniapost' ); ?></option>
-    <?php foreach ( array_reverse ( $this->get_terminal_list () ) as $city => $terminals ): ?>
+    <?php foreach ( $this->get_terminal_list () as $city => $terminals ): ?>
         <option label="<?php echo $city; ?>"><?php echo $city; ?></option>
     <?php endforeach; ?>
 </select>
 <select name="woo_lithuaniapost_lpexpress_terminal_id" id="woo_lithuaniapost_lpexpress_terminal_id" class="select" style="display: none">
     <option value=""><?php echo __( 'Please select LP EXPRESS terminal..', 'woo-lithuaniapost' ); ?></option>
-    <?php foreach ( array_reverse ( $this->get_terminal_list () ) as $city => $terminals ): ?>
+    <?php foreach ( $this->get_terminal_list () as $city => $terminals ): ?>
         <?php foreach ( $terminals as $terminal_id => $terminal ): ?>
             <option value="<?php echo $terminal_id; ?>" data-city="<?php echo $city; ?>">
                 <?php echo $terminal; ?>

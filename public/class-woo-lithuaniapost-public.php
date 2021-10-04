@@ -110,6 +110,20 @@ class Woo_Lithuaniapost_Public
 
         $formatted_list = [];
 
+        // Terminal cities at top
+        $top_list = [
+            'Vilnius',
+            'Kaunas',
+            'Klaipėda',
+            'Šiauliai',
+            'Panevežys',
+            'Alytus',
+            'Marijampolė',
+            'Utena',
+            'Telšiai',
+            'Tauragė'
+        ];
+
         // Get terminals from DB
         $terminals = $wpdb->get_results ( sprintf ( 'SELECT * FROM %s',
 			$wpdb->woo_lithuaniapost_lpexpress_terminals )
@@ -123,8 +137,30 @@ class Woo_Lithuaniapost_Public
 
 			// Formatted grouped list by city
 			$formatted_list [ $terminal->city ][ $terminal->terminal_id ]
-				= sprintf ( '%s - %s', $terminal->name, $terminal->address );
+				= trim ( sprintf ( '%s - %s', $terminal->name, $terminal->address ) );
 		}
+
+		// Sort terminals alphabetically
+		foreach ( $formatted_list as $key => $list ) {
+		    asort ( $formatted_list [ $key ], SORT_ASC );
+        }
+
+        // Top sort cities
+        $ordered = [];
+
+        foreach ( $top_list as $key ) {
+            if ( array_key_exists ( $key, $formatted_list ) ) {
+                $ordered [ $key ] = $formatted_list [ $key ];
+                // Unset top listed cities
+                unset ( $formatted_list [ $key ] );
+            }
+        }
+
+        // Sort cities alphabetically
+        ksort ( $formatted_list );
+
+        // Concat
+		$formatted_list = $ordered + $formatted_list;
 
 		return $formatted_list;
     }

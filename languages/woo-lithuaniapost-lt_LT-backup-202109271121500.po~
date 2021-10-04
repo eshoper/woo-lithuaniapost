@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2021-04-13T11:54:27+03:00\n"
-"PO-Revision-Date: 2021-09-27 11:41+0000\n"
+"PO-Revision-Date: 2021-07-30 09:38+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: woo-lithuaniapost\n"
 "Language: lt-LT\n"
@@ -39,9 +39,6 @@ msgstr "Buto numeris"
 #: admin/class-woo-lithuaniapost-admin-settings.php:196
 msgid "Apartment Number"
 msgstr "Buto numeris"
-
-msgid "Apply minimal amount rule before coupon discount"
-msgstr "Taikyti minimalios sumos taisyklę prieš paskaičiuojant kupono nuolaidą"
 
 #: admin/class-woo-lithuaniapost-admin-order-tracking.php:112
 msgid "Attempt to deliver failed"
@@ -154,9 +151,6 @@ msgstr "Šalis"
 #: admin/partials/includes/html-shipment-editor.php:707
 msgid "Country of Origin"
 msgstr "Kilmės šalis"
-
-msgid "Coupon discount"
-msgstr "Kuponų nuolaidos"
 
 #. translators: %s: number of orders
 #: admin/class-woo-lithuaniapost-admin.php:127
@@ -547,9 +541,6 @@ msgstr "Maksimalus ilgis: 20 simbolių"
 #: admin/class-woo-lithuaniapost-admin-settings.php:182
 msgid "Maximum length: 50 characters"
 msgstr "Maksimalus ilgis: 50 simbolių"
-
-msgid "Minimal order amount for free shipping"
-msgstr "Minimali užsakymo suma nemokamam pristatymui"
 
 #: admin/class-woo-lithuaniapost-admin-settings.php:140 
 #: admin/partials/includes/html-shipment-editor.php:263

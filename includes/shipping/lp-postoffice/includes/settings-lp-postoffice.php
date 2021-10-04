@@ -53,4 +53,23 @@ return [
         'desc_tip'          => true,
         'sanitize_callback' => [ $this, 'sanitize_cost' ],
     ],
+    'free_shipping_cost' => [
+        'title'             => __( 'Minimal order amount for free shipping', 'woo-lithuaniapost' ),
+        'type'              => 'text',
+        'default'           => null,
+    ],
+    'apply_free_shipping_before_discount' => [
+        'title' => __( 'Coupon discount', 'woo-lithuaniapost' ),
+        'label' => __( 'Apply minimal amount rule before coupon discount', 'woo-lithuaniapost' ),
+        'type' => 'checkbox',
+        'default' => 'no'
+    ],
+    'tax_status' => [
+        'title' => __( 'Tax status', 'woocommerce' ),
+        'type'          => 'select',
+        'options'     => [
+            'taxable'  => __( 'Taxable', 'woocommerce' ),
+            'none'     => _x( 'None', 'Tax status', 'woocommerce' ),
+        ],
+    ]
 ];
