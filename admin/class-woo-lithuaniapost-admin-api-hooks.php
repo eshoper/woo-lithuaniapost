@@ -122,7 +122,7 @@ class Woo_Lithuaniapost_Admin_Api_Hooks
             WC_Admin_Settings::add_error ( wp_remote_retrieve_body ( $response ) );
 
 
-            if ( $_GET [ 'page' ] != 'wc-settings'  && $_GET [ 'post_type' ] != 'shop_order' ) {
+            if ( @$_GET [ 'page' ] != 'wc-settings'  && @$_GET [ 'post_type' ] != 'shop_order' ) {
                 $error_name = "Lp_error_" . uniqid ();
                 WC_Admin_Notices::add_custom_notice ( $error_name, wp_remote_retrieve_body ( $response ) );
 
@@ -477,7 +477,7 @@ class Woo_Lithuaniapost_Admin_Api_Hooks
     {
         $response = $this->do_request ( 'documents/item/sticker', [
             'itemId' => $shipping_item_id,
-            'layout' => 'LAYOUT_10x15'
+            'layout' => Woo_Lithuaniapost_Admin_Settings::get_option ( 'other_label_format' )
         ] );
 
         if ( $response ) {

@@ -51,6 +51,11 @@ class Woo_Lithuaniapost_Shipping_Lp_Postoffice extends WC_Shipping_Method
         $this->delivery_method      = $this->get_option ( 'delivery_method' );
         $this->cost                 = $this->get_option( 'cost' );
         $this->delivery_time        = $this->get_option( 'delivery_time' );
+        $this->tax_status           = $this->get_option ( 'tax_status' );
+        $this->free_shipping_cost   = $this->get_option ( 'free_shipping_cost' );
+
+        // Free shipping before discount
+        $this->apply_free_shipping_before_discount = $this->get_option ( 'apply_free_shipping_before_discount' );
     }
 
     /**
@@ -78,6 +83,21 @@ class Woo_Lithuaniapost_Shipping_Lp_Postoffice extends WC_Shipping_Method
         if ( $this->cost == null ) {
             $this->_table_rates->calculate_table_rates ( $packages, $this->cost );
             if ( !$this->cost ) return false;
+        }
+
+        // Free shipping from minimal amount
+        if ( $this->free_shipping_cost ) {
+            // Price with discount
+            $cart_subtotal = WC ()->cart->get_subtotal () - WC ()->cart->get_discount_total ();
+
+            // Price plus discount
+            if ( $this->apply_free_shipping_before_discount == 'yes' ) {
+                $cart_subtotal += WC ()->cart->get_discount_total ();
+            }
+
+            if ( $this->free_shipping_cost <= $cart_subtotal ) {
+                $this->cost = 0;
+            }
         }
 
         $rate = [
