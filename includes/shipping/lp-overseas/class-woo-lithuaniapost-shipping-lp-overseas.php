@@ -71,8 +71,6 @@ class Woo_Lithuaniapost_Shipping_Lp_Overseas extends WC_Shipping_Method
      */
     public function calculate_shipping ( $packages = [] )
     {
-        global $wpdb;
-
         // Use country rates
         if ( $this->cost == null ) {
             $this->_country_rates->calculate_country_rates ( $this->cost );
@@ -95,10 +93,10 @@ class Woo_Lithuaniapost_Shipping_Lp_Overseas extends WC_Shipping_Method
         }
 
         $rate = [
-            'id'       => $this->id,
+            'id'       => $this->get_rate_id (),
             'label'    => $this->title,
             'cost'     => $this->cost,
-            'calc_tax' => 'per_item'
+            'taxes' => ''
         ];
 
         $this->add_rate ( $rate );

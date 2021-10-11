@@ -72,24 +72,35 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
     public function get_additional_services ( $order, $template_id )
     {
         $result = [];
+        $payment_method = $order->get_payment_method ();
 
-        if ( $order->get_payment_method () == 'cod' ) {
+        if ( $payment_method == 'cod' ) {
             // COD Value
             $result [] = [ 'id' => 8, 'amount' => $order->get_total () ];
         }
 
         // Priority - Registered
         foreach ( Woo_Lithuaniapost_Admin_Settings::get_option ( 'consignment_formation' ) as $formation ) {
-            if ( !$this->is_lpexpress_method () && $formation == 'priority' ) {
+            if ( !$this->is_lpexpress_method ( $payment_method ) && $formation == 'priority' ) {
                 $result [] = [ 'id' => 1 ]; // Priority
             }
 
-            if ( !$this->is_lpexpress_method () && $formation == 'registered' || $template_id == 73 || $template_id == 70 ) {
+            if ( !$this->is_lpexpress_method ( $payment_method ) && $formation == 'registered' || $template_id == 73 || $template_id == 70 ) {
                 $result [] = [ 'id' => 2 ]; // Registered
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Get is LP EXPRESS method
+     * @param string $payment
+     * @return bool
+     */
+    protected function is_lpexpress_method ( $payment )
+    {
+        return strpos ( $payment, 'woo_lithuaniapost_lpexpress' ) == false;
     }
 
     /**

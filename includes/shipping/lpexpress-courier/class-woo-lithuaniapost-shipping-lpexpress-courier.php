@@ -92,10 +92,10 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Courier extends WC_Shipping_Method
         }
 
         $rate = [
-            'id'       => $this->id,
+            'id'       => $this->get_rate_id (),
             'label'    => $this->title,
             'cost'     => $this->cost,
-            'calc_tax' => 'per_item'
+            'taxes' => ''
         ];
 
         $this->add_rate ( $rate );
