@@ -199,8 +199,6 @@ class Woo_Lithuaniapost_Admin_Order_Actions
             'additionalServices' => json_decode ( $order->get_meta ( '_woo_lithuaniapost_additional' ), true )
         ];
 
-       //die ( json_encode ( $shipment_data ) );
-
         /**
          * If terminal shipping method selected
          */

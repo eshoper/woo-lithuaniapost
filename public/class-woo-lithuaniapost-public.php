@@ -178,10 +178,10 @@ class Woo_Lithuaniapost_Public
         $selected_method = WC ()->session->get ( 'chosen_shipping_methods' ) [ $index ];
 
         // Run only if terminal method and only in checkout
-		if ( $method->get_id () != 'woo_lithuaniapost_lpexpress_terminal' || !is_checkout () ) return;
+		if ( strpos ( $method->get_method_id (), 'woo_lithuaniapost_lpexpress_terminal' ) === false || !is_checkout () ) return;
 
         // Check if selected method is LP EXPRESS terminal
-        if ( $selected_method == 'woo_lithuaniapost_lpexpress_terminal' ) {
+        if ( strpos ( $selected_method, 'woo_lithuaniapost_lpexpress_terminal' ) !== false ) {
         	include __DIR__ . '/partials/html-lpexpress-terminal.php';
 		}
     }
@@ -216,7 +216,8 @@ class Woo_Lithuaniapost_Public
             $method_object = $shipping_methods [ $method->get_instance_id () ];
 
             if ( $method_object ) {
-                if ( property_exists ( $method_object, 'delivery_time' ) && $method->get_method_id () == $selected_method ) {
+                if ( property_exists ( $method_object, 'delivery_time' )
+                        && $method->get_id () == $selected_method ) {
                     $delivery_time = $method_object->delivery_time;
                     if ( $delivery_time ) {
                         include __DIR__ . '/partials/html-delivery-time.php';
