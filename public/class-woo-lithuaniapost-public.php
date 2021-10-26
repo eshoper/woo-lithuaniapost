@@ -238,7 +238,7 @@ class Woo_Lithuaniapost_Public
         $selected_method = WC ()->session->get ( 'chosen_shipping_methods' ) [ 0 ];
 
         // Run only if terminal method and only in checkout
-        if ( $selected_method != 'woo_lithuaniapost_lpexpress_terminal' || !is_checkout () ) return;
+        if ( strpos ( $selected_method, 'woo_lithuaniapost_lpexpress_terminal' ) === false || !is_checkout () ) return;
 
 		if ( isset ( $_POST [ 'woo_lithuaniapost_lpexpress_terminal_id' ] )
 				&& empty ( $_POST [ 'woo_lithuaniapost_lpexpress_terminal_id' ] ) ) {
@@ -344,6 +344,7 @@ class Woo_Lithuaniapost_Public
                 json_encode ( $cnData )
             );
         }
+
 
         if ( $additional = apply_filters ( 'woo_lithuaniapost_shipping_template_additional_services',
             $order, $template [ 'id' ] ) ) {
