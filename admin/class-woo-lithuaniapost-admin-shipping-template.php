@@ -72,7 +72,8 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
     public function get_additional_services ( $order, $template_id )
     {
         $result = [];
-        $payment_method = $order->get_payment_method ();
+        $payment_method = $order->get_shipping_method ();
+        $selected_method = WC ()->session->get ( 'chosen_shipping_methods' ) [ 0 ];
 
         if ( $payment_method == 'cod' ) {
             // COD Value
@@ -81,11 +82,11 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
 
         // Priority - Registered
         foreach ( Woo_Lithuaniapost_Admin_Settings::get_option ( 'consignment_formation' ) as $formation ) {
-            if ( !$this->is_lpexpress_method ( $payment_method ) && $formation == 'priority' ) {
+            if ( !$this->is_lpexpress_method ( $selected_method ) && $formation == 'priority' ) {
                 $result [] = [ 'id' => 1 ]; // Priority
             }
 
-            if ( !$this->is_lpexpress_method ( $payment_method ) && $formation == 'registered' || $template_id == 73 || $template_id == 70 ) {
+            if ( !$this->is_lpexpress_method ( $selected_method ) && $formation == 'registered' || $template_id == 73 || $template_id == 70 ) {
                 $result [] = [ 'id' => 2 ]; // Registered
             }
         }
@@ -95,12 +96,12 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
 
     /**
      * Get is LP EXPRESS method
-     * @param string $payment
+     * @param string $shipping_method
      * @return bool
      */
-    protected function is_lpexpress_method ( $payment )
+    protected function is_lpexpress_method ( $shipping_method )
     {
-        return strpos ( $payment, 'woo_lithuaniapost_lpexpress' ) == false;
+        return strpos ( $shipping_method, 'woo_lithuaniapost_lpexpress' ) !== false;
     }
 
     /**
