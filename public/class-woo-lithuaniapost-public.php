@@ -392,7 +392,7 @@ class Woo_Lithuaniapost_Public
                 $shipping_methods = $shipping_zone->get_shipping_methods ( true, 'values' );
 
                 foreach ( $shipping_methods as $method ) {
-                    if ( $method->id == $chosen_methods [ 0 ] ) {
+                    if ( $method->id == explode ( ':', $chosen_methods [ 0 ] )[ 0 ] ) {
                         $shipping_template = apply_filters (
                             'woo_lithuaniapost_shipping_template',
                             $method->delivery_method,
@@ -402,7 +402,7 @@ class Woo_Lithuaniapost_Public
                 }
             }
 
-            if ( strpos ( $chosen_methods [ 0 ], 'woo_lithuaniapost' ) != -1 ) {
+            if ( strpos ( $chosen_methods [ 0 ], 'woo_lithuaniapost' ) !== false ) {
                 if ( WC()->customer->get_shipping_country() != 'LT' || !apply_filters ( 'woo_lithuaniapost_is_cod_available', $shipping_template [ 'id' ] ) )
                     unset ( $available_gateways [ 'cod' ] );
             }
