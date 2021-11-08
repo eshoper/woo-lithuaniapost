@@ -348,6 +348,7 @@ class Woo_Lithuaniapost_Public
 
         if ( $additional = apply_filters ( 'woo_lithuaniapost_shipping_template_additional_services',
             $order, $template [ 'id' ] ) ) {
+
             // Save default additional services JSON
             $order->update_meta_data (
                 '_woo_lithuaniapost_additional',
