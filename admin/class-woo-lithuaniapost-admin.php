@@ -287,6 +287,22 @@ class Woo_Lithuaniapost_Admin
             // Save sender info json
             $order->update_meta_data ('_woo_lithuaniapost_sender_info', json_encode ( $sender ) );
 
+            $template = apply_filters (
+                'woo_lithuaniapost_shipping_template',
+                $order->get_meta ( '_woo_lithuaniapost_delivery_method' ),
+                $order->get_meta ( '_woo_lithuaniapost_delivery_size' )
+            );
+
+            if ( $additional = apply_filters ( 'woo_lithuaniapost_shipping_template_additional_services',
+                $order, $template [ 'id' ] ) ) {
+
+                // Save default additional services JSON
+                $order->update_meta_data (
+                    '_woo_lithuaniapost_additional',
+                    json_encode ( $additional )
+                );
+            }
+
             // Update additional services COD value
             if ( $additional_services = json_decode ( $order->get_meta  ('_woo_lithuaniapost_additional' ) ) ) {
                 foreach ( $additional_services as $service ) {
@@ -298,13 +314,6 @@ class Woo_Lithuaniapost_Admin
             }
 
             $order->update_meta_data ('_woo_lithuaniapost_additional', json_encode ( $additional_services ) );
-
-            // Save CN data
-            $template = apply_filters (
-                'woo_lithuaniapost_shipping_template',
-                $order->get_meta ( '_woo_lithuaniapost_delivery_method' ),
-                $order->get_meta ( '_woo_lithuaniapost_delivery_size' )
-            );
 
             $is_cn22 = apply_filters ( 'woo_lithuaniapost_shipping_template_is_cn22', $order, $template [ 'id' ] );
             $is_cn23 = apply_filters ( 'woo_lithuaniapost_shipping_template_is_cn23', $order, $template [ 'id' ] );

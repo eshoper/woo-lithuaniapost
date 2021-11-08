@@ -72,7 +72,7 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
     public function get_additional_services ( $order, $template_id )
     {
         $result = [];
-        $payment_method = $order->get_shipping_method ();
+        $payment_method = $order->get_payment_method ();
         $selected_method = WC ()->session->get ( 'chosen_shipping_methods' ) [ 0 ];
 
         if ( $payment_method == 'cod' ) {
