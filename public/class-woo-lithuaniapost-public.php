@@ -174,11 +174,14 @@ class Woo_Lithuaniapost_Public
      */
     public function render_terminal_field ( $method, $index )
     {
+        // Get selected terminal session
+        $selected_terminal_session = WC ()->session->get ( 'selected_lpexpress_terminal' );
+
     	// Get selected method
         $selected_method = WC ()->session->get ( 'chosen_shipping_methods' ) [ $index ];
 
         // Run only if terminal method and only in checkout
-		if ( strpos ( $method->get_method_id (), 'woo_lithuaniapost_lpexpress_terminal' ) === false || !is_checkout () ) return;
+		if ( strpos ( $method->get_method_id (), 'woo_lithuaniapost_lpexpress_terminal' ) === false ) return;
 
         // Check if selected method is LP EXPRESS terminal
         if ( strpos ( $selected_method, 'woo_lithuaniapost_lpexpress_terminal' ) !== false ) {
@@ -284,14 +287,14 @@ class Woo_Lithuaniapost_Public
             foreach ( $order->get_shipping_methods () as $method ) {
                 $method_object = $shipping_methods [ $method->get_instance_id () ];
 
-                if ( property_exists ( $method_object, 'delivery_method' ) ) {
+                if ( $method_object && property_exists ( $method_object, 'delivery_method' ) ) {
                     $order->update_meta_data (
                         '_woo_lithuaniapost_delivery_method',
                         $method_object->delivery_method
                     );
                 }
 
-                if ( property_exists ( $method_object, 'size' ) ) {
+                if ( $method_object && property_exists ( $method_object, 'size' ) ) {
                     $order->update_meta_data (
                         '_woo_lithuaniapost_delivery_size',
                         $method_object->size
@@ -410,5 +413,70 @@ class Woo_Lithuaniapost_Public
         }
 
         return $available_gateways;
+    }
+
+    /**
+     * Save selected terminal to session
+     * @since 1.0.0
+     */
+    public function save_selected_terminal_session ()
+    {
+        WC ()->session->set ( 'selected_lpexpress_terminal', [
+                'city' => $_REQUEST [ 'city' ] ,
+                'terminal' => $_REQUEST [ 'terminal' ]
+            ]
+        );
+
+        wp_die ();
+    }
+
+    /**
+     * Display selected terminal to order email
+     *
+     * @param array $fields
+     * @param bool $sent_to_admin
+     * @param mixed order
+     * @return mixed
+     * @since 1.0.0
+     */
+    public function add_terminal_field_order_email ( $fields, $sent_to_admin, $order )
+    {
+        if ( $terminal_id = get_post_meta ( $order->id, sprintf ( '_%s_id', 'woo_lithuaniapost_lpexpress_terminal' ), true ) ) {
+            global $wpdb;
+
+            $terminal = $wpdb->get_results ( sprintf ('SELECT * FROM %s WHERE terminal_id = %s',
+                    $wpdb->woo_lithuaniapost_lpexpress_terminals, $terminal_id )
+            );
+
+            $fields [ 'selected_lpexpress_terminal' ] = [
+                'label' => __( 'LP EXPRESS Terminal', 'woo-lithuaniapost' ),
+                'value' => sprintf ( '%s - %s, %s', $terminal [ 0 ]->name, $terminal [ 0 ]->address, $terminal [ 0 ]->city )
+            ];
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Display selected terminal to order email
+     *
+     * @param array $fields
+     * @param bool $sent_to_admin
+     * @param mixed order
+     * @return mixed
+     * @since 1.0.0
+     */
+    public function add_terminal_field_order_thankyou ( $order )
+    {
+        $order = wc_get_order ( $order );
+        if ( $terminal_id = get_post_meta ( $order->get_id (), sprintf ( '_%s_id', 'woo_lithuaniapost_lpexpress_terminal' ), true ) ) {
+            global $wpdb;
+
+            $terminal = $wpdb->get_results ( sprintf ('SELECT * FROM %s WHERE terminal_id = %s',
+                    $wpdb->woo_lithuaniapost_lpexpress_terminals, $terminal_id )
+            );
+
+            echo sprintf ( '<b>%s:</b> %s - %s, %s<br><br><br>', __( 'LP EXPRESS Terminal', 'woo-lithuaniapost' ), $terminal [ 0 ]->name, $terminal [ 0 ]->address, $terminal [ 0 ]->city );
+        }
     }
 }

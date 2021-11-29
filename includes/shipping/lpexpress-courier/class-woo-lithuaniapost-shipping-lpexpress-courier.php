@@ -44,6 +44,7 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Courier extends WC_Shipping_Method
         $this->delivery_time        = $this->get_option( 'delivery_time' );
         $this->tax_status           = $this->get_option ( 'tax_status' );
         $this->free_shipping_cost   = $this->get_option ( 'free_shipping_cost' );
+        $this->type                 = $this->get_option( 'type', 'class' );
 
         // Free shipping before discount
         $this->apply_free_shipping_before_discount = $this->get_option ( 'apply_free_shipping_before_discount' );
@@ -62,6 +63,83 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Courier extends WC_Shipping_Method
     }
 
     /**
+     * Evaluate a cost from a sum/string.
+     *
+     * @param  string $sum Sum of shipping.
+     * @param  array  $args Args, must contain `cost` and `qty` keys. Having `array()` as default is for back compat reasons.
+     * @return string
+     */
+    protected function evaluate_cost ( $sum, $args = array() ) {
+        // Add warning for subclasses.
+        if ( ! is_array( $args ) || ! array_key_exists( 'qty', $args ) || ! array_key_exists( 'cost', $args ) ) {
+            wc_doing_it_wrong( __FUNCTION__, '$args must contain `cost` and `qty` keys.', '4.0.1' );
+        }
+
+        include_once WC ()->plugin_path() . '/includes/libraries/class-wc-eval-math.php';
+
+        // Allow 3rd parties to process shipping cost arguments.
+        $args           = apply_filters( 'woocommerce_evaluate_shipping_cost_args', $args, $sum, $this );
+        $locale         = localeconv();
+        $decimals       = array( wc_get_price_decimal_separator(), $locale['decimal_point'], $locale['mon_decimal_point'], ',' );
+        $this->fee_cost = $args['cost'];
+
+        // Expand shortcodes.
+        add_shortcode( 'fee', array( $this, 'fee' ) );
+
+        $sum = do_shortcode(
+            str_replace(
+                array(
+                    '[qty]',
+                    '[cost]',
+                ),
+                array(
+                    $args['qty'],
+                    $args['cost'],
+                ),
+                $sum
+            )
+        );
+
+        remove_shortcode( 'fee', array( $this, 'fee' ) );
+
+        // Remove whitespace from string.
+        $sum = preg_replace( '/\s+/', '', $sum );
+
+        // Remove locale from string.
+        $sum = str_replace( $decimals, '.', $sum );
+
+        // Trim invalid start/end characters.
+        $sum = rtrim( ltrim( $sum, "\t\n\r\0\x0B+*/" ), "\t\n\r\0\x0B+-*/" );
+
+        // Do the math.
+        return $sum ? WC_Eval_Math::evaluate( $sum ) : 0;
+    }
+
+    /**
+     * Finds and returns shipping classes and the products with said class.
+     *
+     * @param mixed $package Package of items from cart.
+     * @return array
+     */
+    public function find_shipping_classes ( $package ) {
+        $found_shipping_classes = array ();
+
+        foreach ( $package['contents'] as $item_id => $values ) {
+            if ( $values['data']->needs_shipping () ) {
+                $found_class = $values['data']->get_shipping_class ();
+
+                if ( ! isset( $found_shipping_classes[ $found_class ] ) ) {
+                    $found_shipping_classes[ $found_class ] = array();
+                }
+
+                $found_shipping_classes[ $found_class ][ $item_id ] = $values;
+            }
+        }
+
+        return $found_shipping_classes;
+    }
+
+    /**
      * Calculate the shipping costs.
      *
      * @param array $packages
@@ -76,6 +154,49 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Courier extends WC_Shipping_Method
             if ( !$this->cost ) return false;
         }
 
+        $rate = [
+            'id'       => $this->get_rate_id (),
+            'label'    => $this->title,
+            'cost'     => $this->cost,
+            'taxes' => ''
+        ];
+
+        // Add shipping class costs.
+        $shipping_classes = WC ()->shipping ()->get_shipping_classes ();
+
+        if ( ! empty( $shipping_classes ) ) {
+            $found_shipping_classes = $this->find_shipping_classes ( $packages );
+            $highest_class_cost     = 0;
+
+            foreach ( $found_shipping_classes as $shipping_class => $products ) {
+                // Also handles BW compatibility when slugs were used instead of ids.
+                $shipping_class_term = get_term_by( 'slug', $shipping_class, 'product_shipping_class' );
+                $class_cost_string   = $shipping_class_term && $shipping_class_term->term_id ? $this->get_option( 'class_cost_' . $shipping_class_term->term_id, $this->get_option( 'class_cost_' . $shipping_class, '' ) ) : $this->get_option( 'no_class_cost', '' );
+
+                if ( '' === $class_cost_string ) {
+                    continue;
+                }
+
+                $class_cost = $this->evaluate_cost(
+                    $class_cost_string,
+                    array(
+                        'qty'  => array_sum( wp_list_pluck( $products, 'quantity' ) ),
+                        'cost' => array_sum( wp_list_pluck( $products, 'line_total' ) ),
+                    )
+                );
+
+                if ( 'class' === $this->type ) {
+                    $rate [ 'cost' ] += $class_cost;
+                } else {
+                    $highest_class_cost = $class_cost > $highest_class_cost ? $class_cost : $highest_class_cost;
+                }
+            }
+
+            if ( 'order' === $this->type && $highest_class_cost ) {
+                $rate [' cost' ] += $highest_class_cost;
+            }
+        }
+
         // Free shipping from minimal amount
         if ( $this->free_shipping_cost ) {
             // Price with discount
@@ -87,16 +208,9 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Courier extends WC_Shipping_Method
             }
 
             if ( $this->free_shipping_cost <= $cart_subtotal ) {
-                $this->cost = 0;
+                $rate [ 'cost' ] = 0;
             }
         }
-
-        $rate = [
-            'id'       => $this->get_rate_id (),
-            'label'    => $this->title,
-            'cost'     => $this->cost,
-            'taxes' => ''
-        ];
 
         $this->add_rate ( $rate );
     }
