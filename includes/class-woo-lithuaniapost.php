@@ -439,6 +439,10 @@ class Woo_Lithuaniapost {
         $this->loader->add_action ( 'woocommerce_checkout_process', $plugin_public, 'validate_selected_terminal' );
         $this->loader->add_action ( 'woocommerce_checkout_update_order_meta', $plugin_public, 'save_order_meta_info', 30, 1 );
         $this->loader->add_action ( 'woocommerce_available_payment_gateways', $plugin_public, 'disable_cod_payment', 10, 1 );
+        $this->loader->add_action ( 'wp_ajax_save_selected_lpexpress_terminal', $plugin_public, 'save_selected_terminal_session' );
+        $this->loader->add_action ( 'wp_ajax_nopriv_save_selected_lpexpress_terminal', $plugin_public, 'save_selected_terminal_session' );
+        $this->loader->add_action ( 'woocommerce_email_order_meta_fields', $plugin_public, 'add_terminal_field_order_email', 10, 3 );
+        $this->loader->add_action ( 'woocommerce_thankyou', $plugin_public, 'add_terminal_field_order_thankyou', 10, 1 );
 	}
 
 	/**

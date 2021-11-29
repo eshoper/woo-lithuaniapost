@@ -29,4 +29,18 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	$ ( document ).ready ( function () {
+		$ ( '#woo_lithuaniapost_lpexpress_terminal_id' ).on ( 'change', function () {
+			$.ajax({
+				type : "POST",
+				dataType : "json",
+				url : "/wp-admin/admin-ajax.php",
+				data : {
+					action: "save_selected_lpexpress_terminal",
+					city: $ ( '#woo_lithuaniapost_lpexpress_terminal_city' ).val (),
+					terminal: $ ( '#woo_lithuaniapost_lpexpress_terminal_id' ).val ()
+				}
+			});
+		});
+	});
 })( jQuery );

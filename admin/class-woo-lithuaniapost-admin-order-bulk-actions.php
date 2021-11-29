@@ -426,7 +426,7 @@ class Woo_Lithuaniapost_Admin_Order_Bulk_Actions
      */
     public function bulk_action_admin_notice ()
     {
-        if ( $errors = $_REQUEST [ 'bulk_lp_error' ] ):
+        if ( $errors = @$_REQUEST [ 'bulk_lp_error' ] ):
             printf (
                 '<div id="message" class="updated error fade"><p>' .
                 _n ( 'Could not complete action for orders %s.', 'Could not complete action for orders %s.', $errors,
@@ -436,7 +436,7 @@ class Woo_Lithuaniapost_Admin_Order_Bulk_Actions
             );
         endif;
 
-        if ( $_REQUEST [ 'bulk_lp_call_courier' ] ):
+        if ( @$_REQUEST [ 'bulk_lp_call_courier' ] ):
             ?>
                 <div id="message" class="updated fade">
                     <p><?php _e ( 'Call courier action complete.', 'woo-lithuaniapost' ); ?></p>
@@ -444,7 +444,7 @@ class Woo_Lithuaniapost_Admin_Order_Bulk_Actions
             <?php
         endif;
 
-        if ( $_REQUEST [ 'bulk_lp_create_labels' ] ):
+        if ( @$_REQUEST [ 'bulk_lp_create_labels' ] ):
             ?>
                 <div id="message" class="updated fade">
                     <p><?php _e ( 'Create labels action complete.', 'woo-lithuaniapost' ); ?></p>
@@ -452,7 +452,7 @@ class Woo_Lithuaniapost_Admin_Order_Bulk_Actions
             <?php
         endif;
 
-        if ( $_REQUEST [ 'bulk_lp_cancel_labels' ] ):
+        if ( @$_REQUEST [ 'bulk_lp_cancel_labels' ] ):
             ?>
                 <div id="message" class="updated fade">
                     <p><?php _e ( 'Cancel labels action complete.', 'woo-lithuaniapost' ); ?></p>
