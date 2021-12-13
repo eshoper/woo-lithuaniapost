@@ -161,7 +161,7 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
     public function is_cn22 ( $order, $template_id )
     {
         // Check if not in EU
-        if ( !in_array ( $order->get_shipping_country (), WC_Countries::get_european_union_countries () ) ) {
+        if ( !in_array ( $order->get_shipping_country (), WC()->countries->get_european_union_countries () ) ) {
             // CN22
             if ( in_array ( $template_id, [ 42, 43, 70, 73 ] )
                 && $this->get_sdr_value ( $order->get_total () ) < 300 ) {
@@ -183,7 +183,7 @@ class Woo_Lithuaniapost_Admin_Shipping_Template
     public function is_cn23 ( $order, $template_id )
     {
         // Check if not in EU
-        if ( !in_array ( $order->get_shipping_country (), WC_Countries::get_european_union_countries () ) ) {
+        if ( !in_array ( $order->get_shipping_country (), WC()->countries->get_european_union_countries () ) ) {
             // CN23
             if ( in_array ( $template_id, [ 42, 43, 70, 73 ] )
                 && $this->get_sdr_value ( $order->get_total () ) > 300 ) {
