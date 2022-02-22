@@ -354,4 +354,35 @@ class Woo_Lithuaniapost_Admin
     {
         WC_Admin_Notices::remove_notice ( $name );
     }
+
+    /**
+     * Add allowed terminal checkbox to product admin
+     *
+     * @since 2.1.1
+     */
+    public function add_allowed_terminal_checkbox ()
+    {
+        global $post;
+
+        $input_checkbox = get_post_meta ( $post->ID, 'woo_lithuaniapost_allowed_terminal', true );
+        if ( empty ( $input_checkbox ) ) $input_checkbox = '';
+
+        woocommerce_wp_checkbox ( [
+            'id'            => 'woo_lithuaniapost_allowed_terminal',
+            'label'         => __( 'Lithuania Post', 'woo-lithuaniapost' ),
+            'description'   => __( 'Disable LP EXPRESS terminal shipping for this product', 'woo-lithuaniapost' ),
+            'value'         => $input_checkbox,
+        ] );
+    }
+
+    /**
+     * Save allowed LP EXPRESS terminal checkbox
+     *
+     * @param int $post_id
+     */
+    public function save_allowed_terminal_checkbox ( $post_id )
+    {
+        $_terminal_option = isset ( $_POST [ 'woo_lithuaniapost_allowed_terminal' ] ) ? 'yes' : '';
+        update_post_meta ( $post_id, 'woo_lithuaniapost_allowed_terminal', $_terminal_option );
+    }
 }

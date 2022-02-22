@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2021-04-13T11:54:27+03:00\n"
-"PO-Revision-Date: 2021-09-27 11:41+0000\n"
+"PO-Revision-Date: 2022-02-18 07:59+0000\n"
 "X-Generator: Loco https://localise.biz/\n"
 "X-Domain: woo-lithuaniapost\n"
 "Language: lt-LT\n"
@@ -226,6 +226,9 @@ msgstr "Sunaikinta"
 #: admin/class-woo-lithuaniapost-admin-order-tracking.php:135
 msgid "Detained"
 msgstr "Sulaikyta"
+
+msgid "Disable LP EXPRESS terminal shipping for this product"
+msgstr "Išjungti LP EXPRESS terminalo siuntimą šiam produktui"
 
 #: admin/partials/includes/html-shipment-editor.php:377 
 #: admin/partials/includes/html-shipment-editor.php:524

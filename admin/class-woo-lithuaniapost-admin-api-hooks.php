@@ -123,8 +123,16 @@ class Woo_Lithuaniapost_Admin_Api_Hooks
 
 
             if ( @$_GET [ 'page' ] != 'wc-settings'  && @$_GET [ 'post_type' ] != 'shop_order' ) {
-                $error_name = "Lp_error_" . uniqid ();
-                WC_Admin_Notices::add_custom_notice ( $error_name, wp_remote_retrieve_body ( $response ) );
+                $response       = wp_remote_retrieve_body ( $response );
+                $error_name     = 'Lp_error_' . uniqid ();
+                $responseObject = json_decode ( $response );
+
+                if ( property_exists ( $responseObject, 'error' )
+                    && $responseObject->error == 'invalid_token' ) {
+                    $error_name = 'lp_error_invalid_token';
+                }
+
+                WC_Admin_Notices::add_custom_notice ( $error_name, $response );
 
                 // Remove notice after execution
                 wp_schedule_single_event ( time () + 1, 'woo_lithuaniapost_admin_remove_notice', [

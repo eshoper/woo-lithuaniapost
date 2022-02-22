@@ -331,7 +331,8 @@ class Woo_Lithuaniapost {
         $this->loader->add_action ('woocommerce_admin_order_items_after_shipping', $plugin_admin, 'display_terminal_order', 10, 1);
         $this->loader->add_action ('wp_ajax_woo_lithuaniapost_save_shipment', $plugin_admin, 'save_shipping_data' );
         $this->loader->add_action ('woo_lithuaniapost_admin_remove_notice', $plugin_admin, 'remove_notice', 10, 1 );
-
+        $this->loader->add_action ('woocommerce_product_options_inventory_product_data', $plugin_admin, 'add_allowed_terminal_checkbox' );
+        $this->loader->add_action ('woocommerce_process_product_meta', $plugin_admin, 'save_allowed_terminal_checkbox' );
 
         /**
          * Create settings section
