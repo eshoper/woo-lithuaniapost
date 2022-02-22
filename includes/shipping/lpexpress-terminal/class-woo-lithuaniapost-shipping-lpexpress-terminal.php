@@ -149,6 +149,14 @@ class Woo_Lithuaniapost_Shipping_Lpexpress_Terminal extends WC_Shipping_Method
      */
     public function calculate_shipping ( $packages = [] )
     {
+        // Disable if any product is not allowed
+        foreach ( WC ()->cart->get_cart () as $cart ) {
+            $product_id         = $cart [ 'product_id' ];
+            $disable_terminal   = get_post_meta ( $product_id, 'woo_lithuaniapost_allowed_terminal', true );
+
+            if ( $disable_terminal === 'yes' ) return false;
+        }
+
         // Use table rates
         if ( $this->cost == null ) {
             $this->_table_rates->calculate_table_rates ( $packages, $this->cost );

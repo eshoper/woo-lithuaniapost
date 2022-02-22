@@ -974,3 +974,6 @@ msgstr ""
 
 msgid "Apply minimal amount rule before coupon discount"
 msgstr ""
+
+msgid "Disable LP EXPRESS terminal shipping for this product"
+msgstr ""
