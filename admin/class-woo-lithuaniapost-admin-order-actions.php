@@ -185,7 +185,7 @@ class Woo_Lithuaniapost_Admin_Order_Actions
                 ),
                 'address' => [
                     'locality'          => $order->get_shipping_city (),
-                    $template [ 'id' ] == 73 ? 'address1' : 'freeformAddress' => $order->get_shipping_address_1 (),
+                    $template [ 'id' ] == 73 ? 'address1' : 'freeformAddress' => $order->get_shipping_address_1 () . ' ' . $order->get_shipping_address_2 (),
                     'postalCode'        => $order->get_shipping_postcode (),
                     'country'           => $order->get_shipping_country ()
                 ],
