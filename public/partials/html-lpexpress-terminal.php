@@ -37,24 +37,23 @@
 <script>
     jQuery ( document ).ready ( function () {
         jQuery ( '#woo_lithuaniapost_lpexpress_terminal_city' ).on ( 'change', function () {
+            let terminalListJson = JSON.parse ( '<?php echo json_encode ( $this->get_terminal_list () ); ?>' );
             let terminalSelect = jQuery ( '#woo_lithuaniapost_lpexpress_terminal_id' );
-            let terminalSelectForstOption = jQuery ( '#woo_lithuaniapost_lpexpress_terminal_id option:first' );
+            let terminalSelectFirstOptionHtml = jQuery ( '#woo_lithuaniapost_lpexpress_terminal_id option:first' );
 
             if ( jQuery ( this ).val () != '' ) {
                 terminalSelect.css ( { 'display': 'block' } );
+                terminalSelect.children ( 'option' ).remove ();
 
-                terminalSelect.children ( 'option' ).hide ();
-                terminalSelectForstOption.css ( { 'display': 'block' } );
-                terminalSelect.val (
-                    terminalSelectForstOption.val ()
-                );
+                let terminalListOptions = terminalListJson [ jQuery ( this ).val () ];
+                terminalSelect.append ( terminalSelectFirstOptionHtml );
 
-                terminalSelect.children ( 'option[data-city="' + jQuery ( this ).val () + '"]' ).css ( { 'display': 'block' } );
+                for ( const key in terminalListOptions ) {
+                    terminalSelect.append ( `<option value="${key}">${terminalListOptions [ key ]}</option>` );
+                }
             } else {
                 terminalSelect.css ( { 'display': 'none' } );
-                terminalSelect.val (
-                    terminalSelectForstOption.val ()
-                );
+                terminalSelect.children ( 'option' ).remove ();
             }
         });
     });
